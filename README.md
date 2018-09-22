@@ -11,7 +11,6 @@ npm install
 it needs define below content in env.js.
 ```javascript
 const env = {
-    {
         account: {
             host: '',
             port: 465,
@@ -22,7 +21,6 @@ const env = {
             }
         },
         to: ''
-    }
 }
 module.exports = env;
 ```
