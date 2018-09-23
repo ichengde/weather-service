@@ -18,12 +18,13 @@ if (cluster.isMaster) {
         });
     }
 
-    console.log('start');
     try {
         setInterval(() => {
+    		console.log('child progress start');
             const now = new Date();
             if (now.getHours() === 8) {
                 getWeather().then((ans) => {
+    				console.log('today weather: ' + ans);
                     if (ans.indexOf('雨') >= 0) {
                         notify('记得带伞 ' + ans);
                     }
