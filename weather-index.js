@@ -7,6 +7,7 @@ if (cluster.isMaster) {
 } else {
     const getWeather = require('./weather');
     const notify = require('./notify');
+	const env = require('./env');
     const fs = require('fs');
 
     const system_log = console.log;
@@ -18,19 +19,20 @@ if (cluster.isMaster) {
         });
     }
 
+    console.log('child progress start');
+    const [myHour, myMinute] = env.time.split(':');
     try {
         setInterval(() => {
-    		console.log('child progress start');
             const now = new Date();
-            if (now.getHours() === 8) {
+            if (now.getHours() === myHour && now.getMinutes === myMinute) {
                 getWeather().then((ans) => {
-    				console.log('today weather: ' + ans);
+                    console.log('today weather: ' + ans);
                     if (ans.indexOf('雨') >= 0) {
-                        notify('记得带伞 ' + ans);
+                        notify('带伞 ' + ans);
                     }
                 });
             }
-        }, 1000 * 60 * 60);
+        }, 1000 * 60);
     } catch (e) {
         console.log(e);
     }

@@ -2,7 +2,7 @@
   "name": "weather-service",
   "version": "0.0.1",
   "description": "weather notify",
-  "main": "index.js",
+  "main": "weather-index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
