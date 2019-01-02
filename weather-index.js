@@ -1,10 +1,3 @@
-const cluster = require('cluster');
-const process = require('process');
-if (cluster.isMaster) {
-    for (var i = 0; i < 1; i++) {
-        let worker = cluster.fork();
-    }
-} else {
     const getWeather = require('./weather');
     const notify = require('./notify');
 	const env = require('./env');
@@ -14,17 +7,16 @@ if (cluster.isMaster) {
     console.log = function (...params) {
         system_log(...params);
         const now = new Date();
-        fs.appendFile('weather.log', now.toLocaleString() + ' ' + params + '\n', (err) => {
+        fs.appendFile('service.log', now.toLocaleString() + ' ' + params + '\n', (err) => {
             if (err) throw err;
         });
     }
 
-    console.log('child progress start');
     const [myHour, myMinute] = env.time.split(':');
     try {
         setInterval(() => {
             const now = new Date();
-            if (now.getHours() === myHour && now.getMinutes === myMinute) {
+            if (now.getHours() === myHour && now.getMinutes() === myMinute) {
                 getWeather().then((ans) => {
                     console.log('today weather: ' + ans);
                     if (ans.indexOf('雨') >= 0) {
@@ -36,23 +28,4 @@ if (cluster.isMaster) {
     } catch (e) {
         console.log(e);
     }
-
-}
-
-cluster.on('death', function (worker) {
-    console.log('worker ' + worker.pid + ' died. restart...');
-    cluster.fork();
-});
-
-process.on('SIGINT', function () {
-    if (cluster.isMaster) {
-        console.log('user fired. main progress exit.');
-    } else {
-        console.log('child progress exit.');
-    }
-    setTimeout(() => {
-        process.exit()
-    }, 1000);
-});
-
 
